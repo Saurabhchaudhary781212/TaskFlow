@@ -1,32 +1,18 @@
 import dotenv from "dotenv";
-import express from 'express';
 import app from "./src/app.js";
-import connectDB from "./src/db/db.js"
+import connectDB from "./src/db/db.js";
+
 dotenv.config();
 
+const PORT = process.env.PORT || 8000;
 
-// console.log(process.env.MONGODB_URL);
-
-const PORT = process.env.PORT;
-connectDB();
-
-app.listen(PORT, () => {
-    console.log(`listening to ${PORT}`)
-})
-
-// import dotenv from "dotenv";
-// import app from "./src/app.js";
-// import connectDB from "./src/db/db.js";
-// import dns from "dns";
-
-// dns.setDefaultResultOrder("ipv4first");
-
-// dotenv.config();
-
-// const PORT = process.env.PORT || 8000;
-
-// connectDB().then(() => {
-//     app.listen(PORT, () => {
-//         console.log(`🚀 Server running on port ${PORT}`);
-//     });
-// });
+connectDB()
+    .then(() => {
+        app.listen(PORT, "0.0.0.0", () => {
+            console.log(`🚀 Server running on port ${PORT}`);
+        });
+    })
+    .catch((err) => {
+        console.error("Database connection failed:", err);
+        process.exit(1);
+    });
