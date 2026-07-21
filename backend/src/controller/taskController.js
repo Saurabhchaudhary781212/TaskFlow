@@ -175,20 +175,28 @@ export const deleteTask = asyncHandler(async(req, res) => {
 
 // Toggle Task
 export const toggleTask = asyncHandler(async(req, res) => {
-    const task = await findOwnedTask(
-        req.params.id,
-        req.user._id,
-        res
-    );
+    const task = await findOwnedTask(req.params.id, req.user._id, res);
 
-    task.completed = !task.completed;
-    task.status = task.completed ? "done" : "todo";
+    switch (task.status) {
+        case "To-Do":
+            task.status = "In Progress";
+            task.completed = false;
+            break;
+
+        case "In Progress":
+            task.status = "Done";
+            task.completed = true;
+            break;
+
+        default:
+            task.status = "To-Do";
+            task.completed = false;
+    }
 
     await task.save();
 
     res.status(200).json({
         success: true,
-        message: "Task Status Updated",
         task,
     });
 });

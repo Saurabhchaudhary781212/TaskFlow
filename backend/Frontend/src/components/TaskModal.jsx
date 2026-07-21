@@ -17,9 +17,9 @@ const TaskModal = ({ isOpen, onClose, onSubmit, task }) => {
       setFormData({
         title: task.title || "",
         description: task.description || "",
-        dueDate: task.duedate
-          ? new Date(task.duedate).toISOString().split("T")[0]
-          : "",
+        dueDate: task.dueDate
+  ? new Date(task.dueDate).toISOString().split("T")[0]
+  : "",
         priority: task.priority || "medium",
         category: task.category || "general",
         status: task.status || "To-Do",

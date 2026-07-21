@@ -1,6 +1,8 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import "./Login.css";
 
 const Login = () => {
   const { login } = useAuth();
@@ -23,55 +25,109 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+
     setLoading(true);
+    setError("");
 
     try {
       await login(formData.email, formData.password);
       navigate("/dashboard");
     } catch (error) {
-      setError(error.response?.data?.message || "Login failed");
+      setError(error.response?.data?.message || "Login Failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <h1>Welcome Back 👋</h1>
-        <p>Login to manage your tasks</p>
+    <div className="login-page">
 
-        {error && <div className="error-message">{error}</div>}
+      <div className="login-left">
 
-        <form onSubmit={handleSubmit}>
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+        <div className="overlay">
 
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+          <h1>TaskFlow</h1>
 
-          <button className="btn btn-primary full-width" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
+          <p>
+            Organize your work, track your progress,
+            and stay productive every day.
+          </p>
 
-        <p className="auth-footer">
-          Don't have an account? <Link to="/register">Register</Link>
-        </p>
+        </div>
+
       </div>
+
+      <div className="login-right">
+
+        <div className="login-card">
+
+          <h2>Welcome Back 👋</h2>
+
+          <p>
+            Login to continue managing your tasks.
+          </p>
+
+          {error && (
+            <div className="login-error">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
+
+            <div className="input-group">
+
+              <label>Email</label>
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+
+            </div>
+
+            <div className="input-group">
+
+              <label>Password</label>
+
+              <input
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+
+            </div>
+
+            <button
+              className="login-btn"
+              disabled={loading}
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
+
+          </form>
+
+          <div className="login-footer">
+
+            Don't have an account?
+
+            <Link to="/register">
+              Register
+            </Link>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   );
 };

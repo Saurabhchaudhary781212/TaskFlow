@@ -1,3 +1,5 @@
+
+import "./Task.css"
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import TaskModal from "../components/TaskModal";
@@ -20,6 +22,8 @@ const Tasks = () => {
       if (priority) params.append("priority", priority);
 
       const { data } = await api.get(`/tasks?${params.toString()}`);
+      // console.log(data.tasks);
+
       setTasks(data.tasks);
     } catch (error) {
       console.error(error);
@@ -38,36 +42,67 @@ const Tasks = () => {
 
   const handleUpdate = async (taskData) => {
     await api.put(`/tasks/${selectedTask._id}`, taskData);
+
     setSelectedTask(null);
     setModalOpen(false);
+
     loadTasks();
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this task?")) return;
+    if (!window.confirm("Delete this task?")) return;
 
     await api.delete(`/tasks/${id}`);
+
     loadTasks();
   };
 
-  const handleToggle = async (id) => {
+  // const handleToggle = async (id) => {
+  // try {
+  //   const res = await api.patch(`/tasks/${id}/toggle`);
+  //   console.log("Toggle Response:", res.data);
+  //   loadTasks();
+  // } catch (err) {
+  //   console.error("Toggle Error:", err.response?.data || err);
+  // }
+//};
+// const handleToggle = async (id) => {
+//   try {
+//     const response = await api.patch(`/tasks/${id}/toggle`);
+//     console.log("Toggle Success:", response.data);
+//     loadTasks();
+//   } catch (error) {
+//     console.error("Toggle Failed:", error.response?.data || error);
+//   }
+// };
+ const handleToggle = async (id) => {
     await api.patch(`/tasks/${id}/toggle`);
     loadTasks();
   };
+
 
   return (
     <>
       <Navbar />
 
-      <main className="container">
-        <div className="page-heading">
+      <main className="tasks-page">
+
+        {/* Header */}
+
+        <div className="tasks-header">
+
           <div>
-            <h1>My Tasks</h1>
-            <p>Create, update, and manage all your tasks.</p>
+
+            <h1>Task Manager</h1>
+
+            <p>
+              Organize, manage and complete your daily work efficiently.
+            </p>
+
           </div>
 
           <button
-            className="btn btn-primary"
+            className="new-task-btn"
             onClick={() => {
               setSelectedTask(null);
               setModalOpen(true);
@@ -75,10 +110,15 @@ const Tasks = () => {
           >
             + New Task
           </button>
+
         </div>
 
-        <div className="filters">
+        {/* Filters */}
+
+        <div className="filter-card">
+
           <input
+            type="text"
             placeholder="Search tasks..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -87,7 +127,10 @@ const Tasks = () => {
             }}
           />
 
-          <select value={status} onChange={(e) => setStatus(e.target.value)}>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
             <option value="">All Status</option>
             <option value="TO-DO">TO-DO</option>
             <option value="In Progress">In Progress</option>
@@ -98,58 +141,112 @@ const Tasks = () => {
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
           >
-            <option value="">All Priorities</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
+            <option value="">All Priority</option>
             <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
           </select>
 
-          <button className="btn btn-secondary" onClick={loadTasks}>
+          <button
+            className="search-btn"
+            onClick={loadTasks}
+          >
             Search
           </button>
+
         </div>
 
-        <div className="task-grid">
+        {/* Tasks Grid */}
+                <div className="tasks-grid">
+
           {tasks.length === 0 ? (
+
             <div className="empty-state">
-              <h2>No tasks found</h2>
-              <p>Create your first task to get started.</p>
+
+              <h2>No Tasks Found</h2>
+
+              <p>Create your first task to start managing your work.</p>
+
             </div>
+
           ) : (
-            tasks.map((task) => (
+
+            tasks.map((task) => {
+  const isOverdue =
+    task.status !== "Done" &&
+    task.dueDate &&
+    new Date(task.dueDate) < new Date();
+
+  return (
+
               <div className="task-card" key={task._id}>
-                <div className="task-card-top">
+
+                <div className="task-top">
+
                   <span className={`priority priority-${task.priority}`}>
                     {task.priority}
                   </span>
 
-                  <span className={`status status-${task.status}`}>
+                  <span
+                    className={`status ${
+                      task.status === "Done"
+                        ? "done"
+                        : task.status === "In Progress"
+                        ? "progress"
+                        : "todo"
+                    }`}
+                  >
                     {task.status}
                   </span>
+                  {isOverdue && (
+  <span className="status overdue">
+    Overdue
+  </span>
+)}
+
                 </div>
 
-                <h2>{task.title}</h2>
-                <p>{task.description}</p>
+                <h2 className="task-title">
+                  {task.title}
+                </h2>
 
-                <div className="task-meta">
-                  <span>📁 {task.category}</span>
-                  {task.duedate && (
+                <p className="task-description">
+                  {task.description}
+                </p>
+
+                <div className="task-info">
+
+                  <div>
+                    <strong>Category</strong>
+                    <span>{task.category}</span>
+                  </div>
+
+                  <div>
+                    <strong>Due Date</strong>
+
                     <span>
-                      📅 {new Date(task.duedate).toLocaleDateString()}
+
+                      {task.dueDate
+                        ? new Date(task.dueDate).toLocaleDateString()
+                        : "No Date"}
+
                     </span>
-                  )}
+
+                  </div>
+
                 </div>
 
                 <div className="task-actions">
+
                   <button
-                    className="btn btn-success"
+                    className="toggle-btn"
                     onClick={() => handleToggle(task._id)}
                   >
                     Toggle
                   </button>
 
                   <button
-                    className="btn btn-secondary"
+                    className="edit-btn"
                     onClick={() => {
                       setSelectedTask(task);
                       setModalOpen(true);
@@ -159,27 +256,34 @@ const Tasks = () => {
                   </button>
 
                   <button
-                    className="btn btn-danger"
+                    className="delete-btn"
                     onClick={() => handleDelete(task._id)}
                   >
                     Delete
                   </button>
+
                 </div>
+
               </div>
-            ))
+
+            );})
+
           )}
+
         </div>
+
       </main>
 
       <TaskModal
         isOpen={modalOpen}
+        task={selectedTask}
         onClose={() => {
           setModalOpen(false);
           setSelectedTask(null);
         }}
         onSubmit={selectedTask ? handleUpdate : handleCreate}
-        task={selectedTask}
       />
+
     </>
   );
 };

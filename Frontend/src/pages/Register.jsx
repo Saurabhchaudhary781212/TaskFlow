@@ -1,6 +1,8 @@
+// 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import "./Register.css";
 
 const Register = () => {
   const { register } = useAuth();
@@ -24,6 +26,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setError("");
     setLoading(true);
 
@@ -36,57 +39,127 @@ const Register = () => {
 
       navigate("/dashboard");
     } catch (error) {
-      setError(error.response?.data?.message || "Registration failed");
+      setError(
+        error.response?.data?.message ||
+          "Registration Failed"
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <h1>Create Account 🚀</h1>
-        <p>Start managing your tasks today</p>
+    <div className="register-page">
 
-        {error && <div className="error-message">{error}</div>}
+      {/* Left Side */}
 
-        <form onSubmit={handleSubmit}>
-          <input
-            name="name"
-            placeholder="Full Name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
+      <div className="register-left">
 
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+        <div className="overlay">
 
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            minLength="8"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+          <h1>TaskFlow</h1>
 
-          <button className="btn btn-primary full-width" disabled={loading}>
-            {loading ? "Creating Account..." : "Register"}
-          </button>
-        </form>
+          <p>
+            Join thousands of users managing
+            projects, tasks, and productivity
+            in one place.
+          </p>
 
-        <p className="auth-footer">
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
+        </div>
+
       </div>
+
+      {/* Right Side */}
+
+      <div className="register-right">
+
+        <div className="register-card">
+
+          <h2>Create Account 🚀</h2>
+
+          <p>
+            Register to start managing your tasks.
+          </p>
+
+          {error && (
+            <div className="register-error">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
+
+            <div className="input-group">
+
+              <label>Full Name</label>
+
+              <input
+                type="text"
+                name="name"
+                placeholder="Enter your full name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+
+            </div>
+
+            <div className="input-group">
+
+              <label>Email</label>
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+
+            </div>
+
+            <div className="input-group">
+
+              <label>Password</label>
+
+              <input
+                type="password"
+                name="password"
+                placeholder="Minimum 8 characters"
+                minLength="8"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+
+            </div>
+
+            <button
+              className="register-btn"
+              disabled={loading}
+            >
+              {loading
+                ? "Creating Account..."
+                : "Create Account"}
+            </button>
+
+          </form>
+
+          <div className="register-footer">
+
+            Already have an account?
+
+            <Link to="/login">
+              Login
+            </Link>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   );
 };
