@@ -5,7 +5,7 @@ import connectDB from "./src/db/db.js"
 dotenv.config();
 
 
-console.log(process.env.MONGODB_URL);
+// console.log(process.env.MONGODB_URL);
 
 const PORT = process.env.PORT;
 connectDB();
@@ -14,13 +14,19 @@ app.listen(PORT, () => {
     console.log(`listening to ${PORT}`)
 })
 
-// import express from 'express';
-// import connectDB from './src/db/db.js';
+// import dotenv from "dotenv";
+// import app from "./src/app.js";
+// import connectDB from "./src/db/db.js";
+// import dns from "dns";
 
-// const app = express();
+// dns.setDefaultResultOrder("ipv4first");
 
-// connectDB(); // DB connect karo
+// dotenv.config();
 
-// app.listen(5000, () => {
-//     console.log("🚀 Server running on port 5000");
+// const PORT = process.env.PORT || 8000;
+
+// connectDB().then(() => {
+//     app.listen(PORT, () => {
+//         console.log(`🚀 Server running on port ${PORT}`);
+//     });
 // });

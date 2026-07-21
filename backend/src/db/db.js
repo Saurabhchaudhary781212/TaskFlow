@@ -11,19 +11,18 @@ async function connectDB() {
 }
 
 export default connectDB;
-
-// import mongoose from 'mongoose';
-// import dotenv from 'dotenv';
-
-// dotenv.config();
+// import mongoose from "mongoose";
 
 // const connectDB = async() => {
 //     try {
-//         console.log("MONGODB_URL from env:", process.env.MONGODB_URL); // debug
-//         await mongoose.connect(process.env.MONGODB_URL); // no extra options needed in v7+
-//         console.log("✅ Database connected successfully");
+//         console.log("Trying to connect...");
+
+//         await mongoose.connect(process.env.MONGODB_URL);
+
+//         console.log("✅ Connected to DB");
 //     } catch (error) {
-//         console.error("❌ Database connection failed:", error.message);
+//         console.error("❌ Database connection failed:");
+//         console.error(error.message);
 //         process.exit(1);
 //     }
 // };

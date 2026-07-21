@@ -6,8 +6,11 @@ import axios from "axios";
 //     "Content-Type": "application/json",
 //   },
 // });
+console.log("API URL:",
+    import.meta.env.VITE_API_URL);
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000/api",
+    baseURL: import.meta.env.VITE_API_URL || "https://taskflow-97os.onrender.com/api",
+
 });
 
 api.interceptors.request.use((config) => {
